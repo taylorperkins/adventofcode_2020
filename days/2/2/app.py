@@ -55,22 +55,28 @@ How many passwords are valid according to the new interpretation of the policies
 
 import re
 
+from utils import timeit
 
+policy_ptrn = re.compile(r'(?P<first_idx>\d+)-(?P<second_idx>\d+)\s(?P<policy_match>\w):\s(?P<password>.*)')
+
+
+@timeit
 def main(input_):
-    policy_ptrn = re.compile(r'(?P<first_idx>\d+)-(?P<second_idx>\d+)\s(?P<policy_match>\w):\s(?P<password>.*)')
 
     valid_passwords = 0
 
     for v in input_.splitlines():
         m = policy_ptrn.match(v)
-        print(m.groups())
+        first_idx, second_idx, policy_match, password = m.groups()
 
-        cond_1 = m.group("password")[int(m.group("first_idx"))-1] == m.group("policy_match")
-        cond_2 = m.group("password")[int(m.group("second_idx"))-1] == m.group("policy_match")
+        # print(m.groups())
+
+        cond_1 = password[int(first_idx)-1] == policy_match
+        cond_2 = password[int(second_idx)-1] == policy_match
 
         if (cond_1 or cond_2) and not (cond_1 and cond_2):
             valid_passwords += 1
-            print(f"{m.group('password')} is valid")
+            # print(f"{m.group('password')} is valid")
 
     print(f"Total valid: {valid_passwords}")
 

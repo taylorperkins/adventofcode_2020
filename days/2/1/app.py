@@ -32,9 +32,12 @@ How many passwords are valid according to their policies?
 """
 
 import re
-from collections import Counter
+# from collections import Counter
+
+from utils import timeit
 
 
+@timeit
 def main(input_):
     policy_ptrn = re.compile(r'(?P<lowest>\d+)-(?P<highest>\d+)\s(?P<policy_match>\w):\s(?P<password>.*)')
 
@@ -42,14 +45,14 @@ def main(input_):
 
     for v in input_.splitlines():
         m = policy_ptrn.match(v)
-        print(m.groups())
+        # print(m.groups())
 
-        wc = Counter(m.group("password"))
-        policy_match_wc = wc.get(m.group("policy_match"), 0)
+        # wc = Counter(m.group("password"))
+        policy_match_wc = m.group("password").count(m.group("policy_match"))
 
         if int(m.group("lowest")) <= policy_match_wc <= int(m.group("highest")):
             valid_passwords += 1
-            print(f'{m.group("password")} is valid')
+            # print(f'{m.group("password")} is valid')
 
     print(f"Total valid: {valid_passwords}")
 
