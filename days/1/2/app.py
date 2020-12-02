@@ -55,17 +55,30 @@ In your expense report, what is the product of the three entries that sum to 202
 
 
 def main(input_):
-    for i, x in enumerate(input_):
-        x = int(x)
+    loops = 0
+    answer = None
 
-        for j, y in enumerate(input_[i+1:]):
-            y = int(y)
+    try:
+        for i, x in enumerate(input_):
+            x = int(x)
 
-            for z in input_[i+j+1:]:
-                z = int(z)
+            for j, y in enumerate(input_[i+1:]):
+                y = int(y)
 
-                if x+y+z == 2020:
-                    return x*y*z
+                for z in input_[i+j+1:]:
+                    z = int(z)
+
+                    if x+y+z == 2020:
+                        answer = x*y*z
+                        raise Exception
+
+                loops += 1
+            loops += 1
+        loops += 1
+
+    except:
+        print(f"total loops: {loops}")
+        return answer
 
 
 if __name__ == '__main__':
