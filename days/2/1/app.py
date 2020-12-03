@@ -37,7 +37,7 @@ import re
 from utils import timeit
 
 
-@timeit
+@timeit()
 def main(input_):
     policy_ptrn = re.compile(r'(?P<lowest>\d+)-(?P<highest>\d+)\s(?P<policy_match>\w):\s(?P<password>.*)')
 

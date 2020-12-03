@@ -60,7 +60,7 @@ from utils import timeit
 policy_ptrn = re.compile(r'(?P<first_idx>\d+)-(?P<second_idx>\d+)\s(?P<policy_match>\w):\s(?P<password>.*)')
 
 
-@timeit
+@timeit()
 def main(input_):
 
     valid_passwords = 0
