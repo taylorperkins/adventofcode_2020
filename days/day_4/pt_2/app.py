@@ -157,6 +157,8 @@ from typing import Generator, Dict
 
 from pydantic import BaseModel, Field, ValidationError, validator
 
+from utils import timeit
+
 record_delimiter_ptrn = re.compile(r"\n\s*\n")
 
 
@@ -203,7 +205,7 @@ class Passport(BaseModel):
 
     hcl: str = Field(
         ...,
-        regex=r"#[0-9a-f]{6}",
+        regex=r"^#[0-9a-f]{6}$",
         description="Hair Color - a # followed by exactly six characters 0-9 or a-f."
     )
 
@@ -214,7 +216,7 @@ class Passport(BaseModel):
 
     pid: str = Field(
         ...,
-        regex=r"\d{9}",
+        regex=r"^\d{9}$",
         description="Passport ID - a nine-digit number, including leading zeroes."
     )
 
@@ -253,12 +255,12 @@ def validate_records(records):
         try:
             Passport(**record)
         except ValidationError as e:
-            print(e, "\n")
-            yield 0
+            pass
         else:
             yield 1
 
 
+@timeit(iterations=10)
 def main(input_):
     valid_records_gen = validate_records(normalize_records(split_records(input_)))
     return sum(valid_records_gen)
