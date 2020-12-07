@@ -79,7 +79,9 @@ In this example, a single shiny gold bag must contain 126 other bags.
 How many individual bags are required inside your single shiny gold bag?
 """
 import re
-from typing import Tuple, List, Dict
+from typing import List, Dict
+
+from utils import timeit
 
 parent_ptrn = re.compile(r"^(?P<parent>.*?)\sbags?")
 children_ptrn = re.compile(r"(?P<number>\d+)\s(?P<color>.*?)\sbags?")
@@ -154,6 +156,7 @@ def count_bags_for_color(color: str):
     return total_bags
 
 
+@timeit(iterations=10)
 def main(input_: str):
     create_bags(input_)
     our_bag = "shiny gold"
