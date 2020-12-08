@@ -125,7 +125,7 @@ With this change, after the program terminates, the accumulator contains the val
 Fix the program so that it terminates normally by changing exactly one jmp (to nop) or nop (to jmp).
 What is the value of the accumulator after the program terminates?
 """
-from collections import deque, Counter
+from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
 import re
