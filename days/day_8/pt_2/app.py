@@ -131,6 +131,8 @@ from enum import Enum
 import re
 from typing import List
 
+from utils import timeit
+
 
 class InstructionEnum(str, Enum):
     acc = "acc"
@@ -208,6 +210,7 @@ def create_instructions(lines: List[str]):
     return instructions
 
 
+@timeit(iterations=10)
 def main(input_):
 
     instructions = create_instructions(input_.splitlines())
@@ -216,7 +219,6 @@ def main(input_):
         original_instruction = instructions[idx]
 
         if original_instruction.name != InstructionEnum.acc:
-            print(original_instruction)
 
             name = InstructionEnum.jmp if original_instruction.name == InstructionEnum.nop else InstructionEnum.nop
             instructions[idx] = Instruction(name=name, value=original_instruction.value)
