@@ -176,6 +176,10 @@ your device?
 """
 from typing import List
 
+from utils import timeit
+
+adapters = []
+
 
 def clean_input(input_: str) -> List[int]:
     return sorted([int(v) for v in input_.splitlines()])
@@ -184,10 +188,10 @@ def clean_input(input_: str) -> List[int]:
 def cache_counts(f):
     counts = dict()
 
-    def inner(rating, adapters):
+    def inner(rating, adapter_idx):
         result = counts.get(rating)
         if result is None:
-            result = f(rating, adapters)
+            result = f(rating, adapter_idx)
             counts[rating] = result
 
         return result
@@ -195,23 +199,25 @@ def cache_counts(f):
 
 
 @cache_counts
-def calc_distinct_adapters(rating, adapters: List[int]):
-    if adapters:
-        count = 0
-        for ind, adapter in enumerate(adapters):
-            if adapter-rating > 3:
-                break
+def calc_distinct_adapters(rating, adapter_idx: int = 0):
+    count = 0
+    for ind, adapter in enumerate(adapters[adapter_idx:]):
+        if adapter-rating > 3:
+            break
 
-            count += calc_distinct_adapters(rating=adapter, adapters=adapters[ind+1:])
-        return count
-    return 1
+        count += calc_distinct_adapters(rating=adapter, adapter_idx=adapter_idx+ind+1)
+    else:
+        return 1
+    return count
 
 
+@timeit(iterations=20)
 def main(input_: str):
+    global adapters
     adapters = clean_input(input_)
     adapters.append(adapters[-1]+3)
 
-    print(calc_distinct_adapters(rating=0, adapters=adapters))
+    print(calc_distinct_adapters(rating=0, adapter_idx=0))
 
 
 if __name__ == '__main__':
