@@ -194,6 +194,7 @@ class VM:
         self.jump(value=1)
 
 
+@timeit(iterations=10)
 def create_instructions(lines: List[str]):
     instruction_ptrn = re.compile(r"^(?P<name>\w+)\s(?P<value>.*)$")
 
