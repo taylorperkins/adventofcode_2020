@@ -174,9 +174,8 @@ Surely, there must be an efficient way to count the arrangements.
 What is the total number of distinct ways you can arrange the adapters to connect the charging outlet to
 your device?
 """
+from collections import Counter
 from typing import List
-
-from utils import timeit
 
 adapters = []
 
@@ -186,15 +185,13 @@ def clean_input(input_: str) -> List[int]:
 
 
 def cache_counts(f):
-    counts = dict()
+    counts = Counter()
 
     def inner(rating, adapter_idx):
-        result = counts.get(rating)
-        if result is None:
-            result = f(rating, adapter_idx)
-            counts[rating] = result
+        if not counts[rating]:
+            counts[rating] = f(rating, adapter_idx)
 
-        return result
+        return counts[rating]
     return inner
 
 
@@ -211,17 +208,9 @@ def calc_distinct_adapters(rating, adapter_idx: int = 0):
     return count
 
 
-@timeit(iterations=20)
-def main(input_: str):
+def main():
     global adapters
-    adapters = clean_input(input_)
-    adapters.append(adapters[-1]+3)
-
-    print(calc_distinct_adapters(rating=0, adapter_idx=0))
-
-
-if __name__ == '__main__':
-    main("""30
+    adapters = clean_input("""30
 73
 84
 136
@@ -321,3 +310,11 @@ if __name__ == '__main__':
 76
 103
 122""")
+    adapters.append(adapters[-1]+3)
+
+    return calc_distinct_adapters(rating=0, adapter_idx=0)
+
+
+if __name__ == '__main__':
+    import timeit
+    print(timeit.timeit("main()", setup="from __main__ import main")/1_000_000)
