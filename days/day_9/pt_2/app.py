@@ -100,10 +100,10 @@ in this example, these are 15 and 47, producing 62.
 What is the encryption weakness in your XMAS-encrypted list of numbers?
 """
 
-class Program:
 
+class Program:
     def __init__(self, program, preamble_length: int = 5):
-        self._program = list(program)
+        self._program = program
         self._preamble = [self._program.pop(0) for _ in range(preamble_length)]
 
     def _calc_sums(self):
@@ -127,12 +127,26 @@ class Program:
 
 
 def clean_input(input_: str):
-    return (int(v) for v in input_.splitlines())
+    return [int(v) for v in input_.splitlines()]
 
 
 def main(input_: str, preamble_length: int):
-    p = Program(program=clean_input(input_), preamble_length=preamble_length)
-    print(p.run())
+    cleaned = clean_input(input_)
+    p = Program(program=cleaned, preamble_length=preamble_length)
+    result = p.run()
+
+    print(result)
+
+    cleaned = clean_input(input_)
+
+    len_ = len(cleaned)
+    for i in range(2, len_):
+        for j in range(len_-i+1):
+            # print(len(cleaned[j:j+i]))
+            s = sum(cleaned[j:j+i])
+            if s == result:
+                print(min(cleaned[j:j+i])+max(cleaned[j:j+i]))
+                return
 
 
 if __name__ == '__main__':
