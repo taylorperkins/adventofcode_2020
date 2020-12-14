@@ -884,15 +884,6 @@ class Coord:
     x: int
     y: int
 
-    def inverse(self):
-        return Coord(x=-self.x, y=-self.y)
-
-    def rotate_left(self):
-        return Coord(x=-self.y, y=self.x)
-
-    def rotate_right(self):
-        return Coord(x=self.y, y=-self.x)
-
 
 class Navigator:
     def __init__(self):
@@ -941,14 +932,11 @@ class Navigator:
         )
 
     def rotate_waypoint(self, direction: str, theta: int):
-        if theta == 180:
-            self.waypoint = self.waypoint.inverse()
-        else:
-            coord = self.waypoint.rotate_right() if theta == 90 else self.waypoint.rotate_left()
-            if direction == "L":
-                coord = coord.inverse()
-
-            self.waypoint = coord
+        for _ in range(theta // 90):
+            if direction == "R":
+                self.waypoint = Coord(x=self.waypoint.y, y=-self.waypoint.x)
+            else:
+                self.waypoint = Coord(x=-self.waypoint.y, y=self.waypoint.x)
 
 
 def main():
