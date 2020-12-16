@@ -411,17 +411,16 @@ class FieldsManager:
 
         self.valid_idx_map: Dict[int, Field] = dict()
 
-    def get_validator(self, idx):
-        return self.valid_idx_map.get(idx)
-
     def get_validators(self, idx) -> Set[Field]:
+        validator = self.valid_idx_map.get(idx)
+        if validator is not None:
+            return {validator}
         return self.fields - self.invalid_idx_map[idx]
 
     def update_idx_map(self, idx_field_hash: Dict[int, Set[Field]]):
         for idx, fields in idx_field_hash.items():
-            if fields:
-                self.invalid_idx_map[idx].update(fields)
-                self.update()
+            self.invalid_idx_map[idx].update(fields)
+            self.update()
 
     def update(self):
         fields_len = len(self.fields)
@@ -445,7 +444,7 @@ class FieldsManager:
 
             # assign as a valid field, remove from invalid
             self.valid_idx_map[idx] = field
-            self.invalid_idx_map.pop(idx, None)
+            del self.invalid_idx_map[idx]
 
 
 def validate_ticket(ticket: Iterator[int], fields_manager: FieldsManager):
@@ -455,16 +454,13 @@ def validate_ticket(ticket: Iterator[int], fields_manager: FieldsManager):
         invalid_fields = set()
         num_is_valid = False
 
-        validator = fields_manager.get_validator(idx)
-        if validator is not None:
-            if validator.validate(num):
+        for field in fields_manager.get_validators(idx=idx):
+            if field.validate(num):
                 num_is_valid = True
-        else:
-            for field in fields_manager.get_validators(idx=idx):
-                if field.validate(num):
-                    num_is_valid = True
-                else:
-                    invalid_fields.add(field)
+            else:
+                invalid_fields.add(field)
+
+        if invalid_fields:
             idx_field_hash[idx] = invalid_fields
 
         if not num_is_valid:
@@ -501,7 +497,7 @@ def parse_program_input():
     )
 
 
-@timeit(iterations=100)
+# @timeit(iterations=100)
 def main():
     fields, my_ticket, nearby_tickets = parse_program_input()
     fields_manager = FieldsManager(fields=fields)
@@ -517,7 +513,7 @@ def main():
         (v for ind, v in enumerate(my_ticket) if fields_manager.valid_idx_map[ind].name.startswith("departure"))
     )
 
-    return result
+    print(result)
 
 
 if __name__ == '__main__':
