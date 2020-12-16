@@ -450,7 +450,6 @@ class FieldsManager:
 
 def validate_ticket(ticket: Iterator[int], fields_manager: FieldsManager):
     idx_field_hash = dict()
-    validation_statuses = []
 
     for idx, num in enumerate(ticket):
         invalid_fields = set()
@@ -468,11 +467,11 @@ def validate_ticket(ticket: Iterator[int], fields_manager: FieldsManager):
                     invalid_fields.add(field)
             idx_field_hash[idx] = invalid_fields
 
-        validation_statuses.append(num_is_valid)
+        if not num_is_valid:
+            return
 
     # ticket is valid
-    if all(validation_statuses):
-        fields_manager.update_idx_map(idx_field_hash)
+    fields_manager.update_idx_map(idx_field_hash)
 
 
 def parse_fields(ranges: str):
